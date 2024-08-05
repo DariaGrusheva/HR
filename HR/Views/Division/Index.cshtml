@@ -1,0 +1,55 @@
+﻿@using Newtonsoft.Json
+@model List<StructuralDivision>
+
+@{
+    ViewData["Title"] = "Структурные подразделения";
+    var jsonSetting = new JsonSerializerSettings
+    {
+          ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+    };
+}
+
+<div class="container text-center">
+    <div class="row">
+        <h2>Структурные подразделения</h2>
+    </div>
+    <div class="row">
+        <div id="toolbar">
+            <a id="createbtn" href="@Url.Action("CreateOrEditStructuralDivision", "Division")" type="button" class="btn btn-primary">Добавить</a>
+        </div>
+        <table id="structuralDivisionTable"
+               data-pagination="true"
+               data-search="true"
+               data-show-columns="true"
+               data-toolbar="#toolbar">
+            <thead>
+                <tr>
+                    <th data-field="Id" data-visible="false">Id</th>
+                    <th data-field="DepartmentCode" data-sortable="true">Код подразделения</th>
+                    <th data-field="FullTitle" data-sortable="true">Наименование</th>
+                    <th data-field="Abbreviation" data-sortable="true">Аббревиатура</th>
+                    <th data-field="DateCreationToString" data-sortable="true">Дата создания</th>
+                    <th data-field="PositionChief.Employee.Person.FullName" data-sortable="true">Руководитель подразделения</th>
+                    <th data-field="editbtn" data-formatter="editFormatter"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section scripts{
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
+
+        <script>
+             var data = @Html.Raw(JsonConvert.SerializeObject(Model, Formatting.Indented, jsonSetting));
+             $table = $("#structuralDivisionTable");
+
+             $table.bootstrapTable({ data });
+
+            function editFormatter(value, row) {
+            return '<a href="@Url.Action("CreateOrEditStructuralDivision", "Division")?Id='+row.Id+'">Изменить</a> '
+            }
+        </script>
+}

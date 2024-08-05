@@ -1,0 +1,56 @@
+﻿@using Newtonsoft.Json
+@model List<Person>
+
+@{
+    ViewData["Title"] = "Данные о людях";
+}
+
+<div class="container text-center">
+    <div class="row">
+        <h2>Данные о людях</h2>
+    </div>
+    <div class="row">
+        <div id="toolbar">
+            <a id="createbtn" href="@Url.Action("CreateOrEditPerson", "Person")" type="button" class="btn btn-primary">Добавить</a>
+        </div>
+        <table id="personTable"
+               data-pagination="true"
+               data-search="true"
+               data-show-columns="true"
+               data-toolbar="#toolbar">
+            <thead>
+                <tr>
+                    <th data-field="Id" data-visible="false">Id</th>
+                    <th data-field="FullName" data-sortable="true">ФИО</th>
+                    <th data-field="Gender" data-sortable="true">Пол</th>
+                    <th data-field="DateBirthToString" data-sortable="true">Дата рождения</th>
+                    <th data-field="Age" data-sortable="true">Возраст</th>
+                    <th data-field="PhoneNumber" data-sortable="true">Контактный телефон</th>
+                    <th data-field="Email" data-sortable="true">Электронная почта</th>
+                    <th data-field="editbtn" data-formatter="editFormatter"></th>
+                    <th data-field="detailsbtn" data-formatter="detailsFormatter"></th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+    <script>
+        var data = @Html.Raw(JsonConvert.SerializeObject(Model));
+        $table = $("#personTable");
+
+        $table.bootstrapTable({ data });
+
+        function editFormatter(value, row) {
+            return '<a href="@Url.Action("CreateOrEditPerson", "Person")?Id=' + row.Id + '">Изменить</a> '
+        }
+        function detailsFormatter(value, row) {
+            return '<a href="@Url.Action("DetailsPerson", "Person")?Id=' + row.Id + '">Карточка <br> сотрудника</a> '
+        }
+    </script>
+}
+

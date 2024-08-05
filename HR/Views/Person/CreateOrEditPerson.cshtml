@@ -1,0 +1,50 @@
+﻿@model Person
+
+@{
+    ViewData["Title"] = "Внесение данных о людях";
+}
+
+<form asp-action="createOrEditPerson" asp-controller="person" enctype="multipart/form-data">
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.DateCreationRecord)
+    @Html.HiddenFor(model => model.Photo)
+    <p>
+        <img src="data:image/png;base64,@Model.GetPhotoInBase64String" alt="Фото не загружено" style="width: 180px; height:180px;">
+    </p>
+    <p>
+        <label asp-for="Surname" class="form-label">Фамилия:</label><br />
+        <input type="text" asp-for="Surname" class="form-control" />
+    </p>
+    <p>
+        <label asp-for="Firstname" class="form-label">Имя:</label><br />
+        <input type="text" asp-for="Firstname" class="form-control" />
+    </p>
+    <p>
+        <label asp-for="Patronymic" class="form-label">Отчество:</label><br />
+        <input type="text" asp-for="Patronymic" class="form-control" />
+    </p>
+    <p>
+        <label asp-for="Gender" class="form-label">Пол:</label><br />
+        @Html.DropDownList("Gender", ViewBag.Genders as SelectList)
+    </p>
+    <p>
+        <label asp-for="DateBirth" class="form-label">Дата рождения:</label><br />
+        <input type="date" asp-for="DateBirth" class="form-control" />
+    </p>
+    <p>
+        <label asp-for="PhoneNumber" class="form-label">Контактный телефон:</label><br />
+        <input type="text" asp-for="PhoneNumber" class="form-control" />
+    </p>
+    <p>
+        <label asp-for="Email" class="form-label">Электронная почта:</label><br />
+        <input type="text" asp-for="Email" class="form-control" />
+    </p>
+    <p>
+        <label for="uploadPhoto" class="form-label">Изменить (загрузить) фото:</label><br />
+        <input type="file" id="uploadPhoto" name="uploadPhoto" class="form-control" />
+    </p>
+    <p>
+        <a type="button" class="btn btn-secondary" href="@Url.Action("Index","Person")">Закрыть</a>
+        <input type="submit" value="Внести данные" class="btn btn-primary" />
+    </p>
+</form> 

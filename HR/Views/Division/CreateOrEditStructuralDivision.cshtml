@@ -1,0 +1,57 @@
+﻿@model StructuralDivision
+
+@{
+    ViewData["Title"] = "Внесение данных о структурных подразделениях";
+}
+
+<form asp-action="createOrEditStructuralDivision" asp-controller="division" id="divisionForm">
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.DateCreationRecord)
+    <p>
+    <label asp-for="DepartmentCode" class="form-label">Код подразделения:</label><br />
+        <input type="text" asp-for="DepartmentCode" class="form-control" />
+        <span asp-validation-for="DepartmentCode" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="FullTitle" class="form-label">Наименование подразделения:</label><br />
+        <input type="text" asp-for="FullTitle" class="form-control" />
+        <span asp-validation-for="FullTitle" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="Abbreviation" class="form-label">Аббревиатура:</label><br />
+        <input type="text" asp-for="Abbreviation" class="form-control" />
+        <span asp-validation-for="DateCreation" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="DateCreation" class="form-label">Дата создания подразделения:</label><br />
+        <input type="date" asp-for="DateCreation" class="form-control" />
+        <span asp-validation-for="DateCreation" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="DateLiquidation" class="form-label">Дата ликвидации подразделения:</label><br />
+        <input type="date" asp-for="DateLiquidation" class="form-control" />
+        <span asp-validation-for="DateLiquidation" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="PositionChiefId" class="form-label">Должность руководителя подразделения:</label><br />
+        @Html.DropDownList("PositionChiefId", ViewBag.Positions as SelectList)
+    </p>
+    @if (Model.ParentId != 0)
+    {
+        <p>
+            <label asp-for="ParentId" class="form-label">Руководящее подразделение:</label><br />
+            @Html.DropDownList("ParentId", ViewBag.Divisions as SelectList)
+        </p>
+    }
+
+    <p>
+        <a type="button" class="btn btn-secondary" href="@Url.Action("Index","Division")">Закрыть</a>
+        <input type="submit" value="Внести данные" class="btn btn-primary" />
+    </p>
+</form> 
+
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

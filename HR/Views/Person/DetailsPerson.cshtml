@@ -1,0 +1,63 @@
+﻿@model Person
+@{
+    ViewData["Title"] = "Подробнее о сотруднике";
+}
+
+<form asp-action="detailsePerson" asp-controller="person">
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.Photo)
+    <p>
+        <img src="data:image/png;base64,@Model.GetPhotoInBase64String" alt="Фото не загружено" style="width: 180px; height:180px;">
+    </p>
+    <p>
+        <label asp-for="FullName" class="form-label">ФИО:</label><br />
+        <input type="text" asp-for="FullName" class="form-control" disabled />
+    </p>
+    <p>
+        <label asp-for="Gender" class="form-label">Пол:</label><br />
+        <input type="text" asp-for="Gender" class="form-control" disabled />
+    </p>
+    <p>
+        <label asp-for="DateBirth" class="form-label">Дата рождения:</label><br />
+        <input type="date" asp-for="DateBirth" class="form-control" disabled />
+    </p>
+    <p>
+        <label asp-for="Age" class="form-label">Возраст:</label><br />
+        <input type="text" asp-for="Age" class="form-control" disabled />
+    </p> 
+    <p>
+        <label asp-for="Experience" class="form-label">Стаж работы:</label><br />
+        <input type="text" asp-for="Experience" class="form-control" disabled />
+    </p>
+    <p>
+        <label asp-for="PhoneNumber" class="form-label">Контактный телефон:</label><br />
+        <input type="text" asp-for="PhoneNumber" class="form-control" disabled />
+    </p>
+    <p>
+        <label asp-for="Email" class="form-label">Электронная почта:</label><br />
+        <input type="text" asp-for="Email" class="form-control" disabled />
+    </p>
+    @foreach(var item in Model.Employees.OrderByDescending(e => e.DateDismissalTransfer))
+    {
+        <p>
+            <label asp-for="@item.ServiceNumber" class="form-label">Табельный номер:</label><br />
+            <input type="text" asp-for="@item.ServiceNumber" class="form-control" style="background-color:#e6f4ff" disabled />
+        </p>
+        <p>
+            <label asp-for="@item.Position.NamePosition" class="form-label">Должность:</label><br />
+            <input type="text" asp-for="@item.Position.NamePosition" class="form-control" style="background-color:#e6f4ff" disabled />
+        </p>
+        <p>
+            <label asp-for="@item.DateAdmissionTransfer" class="form-label">Дата приема/перевода-прибытия:</label><br />
+            <input type="date" asp-for="@item.DateAdmissionTransfer" class="form-control" style="background-color:#fffaf0" disabled />
+        </p>
+        <p>
+            <label asp-for="@item.DateDismissalTransfer" class="form-label">Дата увольнения/перевода-выбытия:</label><br />
+            <input type="date" asp-for="@item.DateDismissalTransfer" class="form-control" style="background-color:#fffaf0" disabled />
+        </p>
+    }
+   
+    <p>
+        <a type="button" class="btn btn-secondary" href="@Url.Action("Index","Person")">Закрыть</a>
+    </p>
+</form>

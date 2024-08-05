@@ -1,0 +1,111 @@
+﻿@using Newtonsoft.Json
+@model List<Employee>
+
+@{
+    ViewData["Title"] = "Назначения";
+    var jsonSetting = new JsonSerializerSettings
+            {
+                ReferenceLoopHandling = ReferenceLoopHandling.Ignore
+            };
+}
+
+<div class="container text-center">
+    <div class="row">
+        <h2>Назначения</h2>
+    </div>
+    <div class="row">
+        <form class="row row-cols-lg-auto g-3 align-items-center" style="margin-bottom: 2rem">
+              <div class="col-12">
+                <label class="visually-hidden" for="dateStart">Дата начала отчета:</label>
+                <div class="input-group">
+                    <input type="date" class="form-control" id="dateStart" placeholder="Дата начала отчета">
+                </div>
+              </div>
+
+            <div class="col-12">
+                <label class="visually-hidden" for="dateEnd">Дата окончания отчета:</label>
+                <div class="input-group">
+                    <input type="date" class="form-control" id="dateEnd" placeholder="Дата окончания отчета">
+                </div>
+            </div>
+
+              <div class="col-12">
+                <label class="visually-hidden" for="typeReport">Вид отчета:</label>
+                <select class="form-select" id="typeReport">
+                    <option selected value="0">Вид отчета</option>
+                  <option value="1">Отчет о принятых</option>
+                  <option value="2">Отчет о переведенных</option>
+                  <option value="3">Отчет об уволенных</option>
+                </select>
+              </div>
+
+              <div class="col-12">
+                <button type="button" class="btn btn-primary" onclick="getReport()">Сформировать</button>
+              </div>    
+        </form>
+    </div>
+    <div class="row">
+        <div id="toolbar">
+            <a id="createbtn" href="@Url.Action("CreateOrEditEmployee", "Employee")" type="button" class="btn btn-primary">Добавить назначение</a>
+        </div>
+        <table id="employeeTable"
+               data-pagination="true"
+               data-search="true"
+               data-show-columns="true"
+               data-show-export="true"
+               data-toolbar="#toolbar">
+            <thead>
+                <tr>
+                    <th data-field="Id" data-visible="false">Id</th>
+                    <th data-field="Person.FullName" data-sortable="true">ФИО</th>
+                    <th data-field="ServiceNumber" data-sortable="true">Табельный номер</th>
+                    <th data-field="Position.NamePosition" data-sortable="true">Должность</th>
+                    <th data-field="DateAdmissionTransferToString" data-sortable="true">Дата приема/<br/>перевода-прибытия</th>
+                    <th data-field="DateDismissalTransferToString" data-sortable="true">Дата увольнения/<br/>перевода-выбытия</th>
+                    <th data-field="editbtn" data-formatter="editFormatter"></th>
+                    
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+
+    <script src="~/lib/jquery/dist/tableexport.jquery.plugin-1.29.0/tableExport.min.js"></script>
+    <script src="~/lib/jquery/dist/tableexport.jquery.plugin-1.29.0/libs/jsPDF/jspdf.umd.min.js"></script>
+    <script src="~/lib/bootstrap-table/dist/extensions/export/bootstrap-table-export.min.js"></script>
+
+    <script>
+        var data = @Html.Raw(JsonConvert.SerializeObject(Model, Formatting.Indented, jsonSetting));
+        $table = $("#employeeTable");
+
+        $table.bootstrapTable({ data });
+
+        function editFormatter(value, row) {
+            return '<a href="@Url.Action("CreateOrEditEmployee", "Employee")?Id=' + row.Id + '">Изменить назначение</a> '
+        }
+
+        function getReport() {
+            var dateStart = $('#dateStart').val();
+            var dateEnd = $('#dateEnd').val();
+            var typeReport = $("#typeReport option:selected").val();
+            $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetReport", "Employee")',
+                data: { dateStart: dateStart, dateEnd: dateEnd, typeReport: typeReport },
+                dataType: "json",
+                cache: false,
+                success: function (response) {
+                    $table.bootstrapTable('load', response)
+                },
+                error: function (er) {
+                    alert('Error');
+                }
+            })
+        }
+    </script>
+}

@@ -1,0 +1,42 @@
+﻿@model Employee
+
+@{
+    ViewData["Title"] = "Внесение данных о назначениях";
+}
+
+<form asp-action="createOrEditEmployee" asp-controller="employee" id="emplForm">
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.DateCreationRecord)
+    <p>
+        <label asp-for="ServiceNumber" class="form-label">Табельный номер:</label><br />
+        <input type="text" asp-for="ServiceNumber" class="form-control" />
+    </p>
+    <p>
+        <label asp-for="PersonId" class="form-label">ФИО:</label><br />
+        @Html.DropDownList("PersonId", ViewBag.Persons as SelectList)
+    </p>
+    <p>
+        <label asp-for="PositionId" class="form-label">Должность:</label><br />
+            @Html.DropDownList("PositionId", ViewBag.Positions as SelectList)
+    </p>
+    <p>
+        <label asp-for="DateAdmissionTransfer" class="form-label">Дата приема/перевода-прибытия:</label><br />
+        <input type="date" asp-for="DateAdmissionTransfer" class="form-control" />
+        <span asp-validation-for="DateAdmissionTransfer" class="text-danger"></span>
+    </p>
+    <p>
+        <label asp-for="DateDismissalTransfer" class="form-label">Дата увольнения/перевода-выбытия:</label><br />
+        <input type="date" asp-for="DateDismissalTransfer" class="form-control" />
+        <span asp-validation-for="DateDismissalTransfer" class="text-danger"></span>
+    </p>
+    <p>
+        <a type="button" class="btn btn-secondary" href="@Url.Action("Index","Employee")">Закрыть</a>
+        <input type="submit" value="Внести данные" class="btn btn-primary" />
+    </p>
+</form> 
+
+@section scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
